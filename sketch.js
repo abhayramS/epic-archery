@@ -9,8 +9,6 @@ var palyer, playerBase, playerArcher;
 var arrow;
 var baseimage;
 var playerimage;
-var playerArrows = [];
-
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -42,6 +40,7 @@ function setup() {
     120,
     120
   );
+
   arrow = new PlayerArrow(
     playerArcher.body.position.x,
     playerArcher.body.position.y,
@@ -52,23 +51,23 @@ function setup() {
 
 function draw() {
   background(backgroundImg);
-
-  Engine.update(engine);
   image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
   image(playerimage,player.position.x,player.position.y,50,180)
+  Engine.update(engine);}
 
   playerArcher.display();
+  for (var i = 0; i < playerArrows.length; i++) {
+    if (playerArrows[i] !== undefined) {
+      playerArrows[i].display();}
   arrow.display();
 
   if (keyCode === 32) {
     arrow.shoot(playerArcher.body.angle);
   }
+
   // Title
   fill("#FFFF");
   textAlign("center");
   textSize(40);
   text("EPIC ARCHERY", width / 2, 100);
 }
-
-
-

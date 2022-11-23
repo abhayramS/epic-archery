@@ -4,10 +4,10 @@ const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
 var engine, world;
-var canvas;
+var canvas,baseimage,playerimage;
 var palyer, playerBase, playerArcher;
 var playerArrows = [];
-
+var board1, board2;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -20,7 +20,6 @@ function setup() {
 
   engine = Engine.create();
   world = engine.world;
-
   angleMode(DEGREES);
 
   var options = {
@@ -39,25 +38,28 @@ function setup() {
     120,
     120
   );
+
   board1 = new Board(width - 300, 330, 50, 200);
   board2 = new Board(width - 550, height - 300, 50, 200);
 }
 
 function draw() {
-  background(backgroundImg);
-
-  Engine.update(engine);
+  background(backgroundImg );
   image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
   image(playerimage,player.position.x,player.position.y,50,180)
 
+  Engine.update(engine);
   playerArcher.display();
+
+  board1.display();
+  board2.display();
 
   for (var i = 0; i < playerArrows.length; i++) {
     if (playerArrows[i] !== undefined) {
       playerArrows[i].display();
-    }
-      //optional[ code to add trajectory of arrow]
-      
+
+      //[ code to add trajectory of arrow]
+      optional
       // var posX = playerArrows[i].body.position.x;
       // var posY = playerArrows[i].body.position.y;
 
@@ -67,6 +69,8 @@ function draw() {
       //   } else {
       //     playerArrows[i].trajectory = [];
       //   }
+      // }
+    }
   }
 
   // Title
@@ -74,21 +78,23 @@ function draw() {
   textAlign("center");
   textSize(40);
   text("EPIC ARCHERY", width / 2, 100);
+
 }
 
 function keyPressed() {
   if (keyCode === 32) {
-    var posX = playerArcher.body.position.x;
-    var posY = playerArcher.body.position.y;
-    var angle = playerArcher.body.angle;
-    //console.log(angle);
+   
+      var posX = playerArcher.body.position.x;
+      var posY = playerArcher.body.position.y;
+      var angle = playerArcher.body.angle;
 
-    var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
+      var arrow = new PlayerArrow(posX, posY, 100, 20, angle);
 
-    Matter.Body.setAngle(arrow.body, angle);
-    playerArrows.push(arrow);
+      arrow.trajectory = [];
+      Matter.Body.setAngle(arrow.body, angle);
+      playerArrows.push(arrow);
+    }
   }
-}
 
 function keyReleased() {
   if (keyCode === 32) {
@@ -98,3 +104,5 @@ function keyReleased() {
     }
   }
 }
+
+var numberOfArrows = 10;

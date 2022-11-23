@@ -6,9 +6,8 @@ const Constraint = Matter.Constraint;
 var engine, world;
 var canvas;
 var palyer, playerBase, playerArcher;
-var arrow;
-var baseimage;
-var playerimage;
+var playerArrows = [];
+
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -40,29 +39,34 @@ function setup() {
     120,
     120
   );
-
-  arrow = new PlayerArrow(
-    playerArcher.body.position.x,
-    playerArcher.body.position.y,
-    100,
-    10
-  );
+  board1 = new Board(width - 300, 330, 50, 200);
+  board2 = new Board(width - 550, height - 300, 50, 200);
 }
 
 function draw() {
   background(backgroundImg);
+
+  Engine.update(engine);
   image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
   image(playerimage,player.position.x,player.position.y,50,180)
-  Engine.update(engine);}
 
   playerArcher.display();
+
   for (var i = 0; i < playerArrows.length; i++) {
     if (playerArrows[i] !== undefined) {
-      playerArrows[i].display();}
-  arrow.display();
+      playerArrows[i].display();
+    }
+      //optional[ code to add trajectory of arrow]
+      
+      // var posX = playerArrows[i].body.position.x;
+      // var posY = playerArrows[i].body.position.y;
 
-  if (keyCode === 32) {
-    arrow.shoot(playerArcher.body.angle);
+      // if (posX > width || posY > height) {
+      //   if (!playerArrows[i].isRemoved) {
+      //     playerArrows[i].remove(i);
+      //   } else {
+      //     playerArrows[i].trajectory = [];
+      //   }
   }
 
   // Title
@@ -70,4 +74,27 @@ function draw() {
   textAlign("center");
   textSize(40);
   text("EPIC ARCHERY", width / 2, 100);
+}
+
+function keyPressed() {
+  if (keyCode === 32) {
+    var posX = playerArcher.body.position.x;
+    var posY = playerArcher.body.position.y;
+    var angle = playerArcher.body.angle;
+    //console.log(angle);
+
+    var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
+
+    Matter.Body.setAngle(arrow.body, angle);
+    playerArrows.push(arrow);
+  }
+}
+
+function keyReleased() {
+  if (keyCode === 32) {
+    if (playerArrows.length) {
+      var angle = playerArcher.body.angle;
+      playerArrows[playerArrows.length - 1].shoot(angle);
+    }
+  }
 }
